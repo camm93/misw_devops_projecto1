@@ -11,11 +11,17 @@ class BlacklistResource(Resource):
 
         verify_token()
 
-        data = request.get_json()
+        data = request.get_json() or {}
 
         email = data.get("email")
         app_uuid = data.get("app_uuid")
         blocked_reason = data.get("blocked_reason")
+
+        if not email or not app_uuid:
+            return {"message": "email and app_uuid are required"}, 400
+
+        if blocked_reason and len(blocked_reason) > 255:
+            return {"message": "blocked_reason must be 255 characters or less"}, 400
 
         ip_address = request.remote_addr
 
