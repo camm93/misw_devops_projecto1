@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Api
 
 from app.config import Config
@@ -19,8 +19,11 @@ def create_app():
     api.add_resource(BlacklistResource, "/blacklists")
     api.add_resource(BlacklistCheckResource, "/blacklists/<string:email>")
 
-    with app.app_context():
+    @app.route("/")
+    def health_check():
+        return jsonify({"status": "ok"}), 200
 
+    with app.app_context():
         db.create_all()
 
     return app
