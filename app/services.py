@@ -6,7 +6,7 @@ from app.models import Blacklist
 
 def add_email_to_blacklist(email, app_uuid, blocked_reason, ip_address):
     blacklist_entry = Blacklist(
-        email=email,
+        email=email.strip().lower(),
         app_uuid=app_uuid,
         blocked_reason=blocked_reason,
         ip_address=ip_address,
@@ -15,7 +15,6 @@ def add_email_to_blacklist(email, app_uuid, blocked_reason, ip_address):
     try:
         db.session.add(blacklist_entry)
         db.session.commit()
-
     except IntegrityError:
         db.session.rollback()
         return None
@@ -24,8 +23,9 @@ def add_email_to_blacklist(email, app_uuid, blocked_reason, ip_address):
 
 
 def check_email_blacklist(email):
+    normalized_email = email.strip().lower()
 
-    entry = Blacklist.query.filter_by(email=email).first()
+    entry = Blacklist.query.filter_by(email=normalized_email).first()
 
     if entry:
         return True, entry.blocked_reason
