@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, jsonify
 from flask_restful import Api
 
@@ -21,7 +23,10 @@ def create_app():
 
     @app.route("/")
     def health_check():
-        return jsonify({"status": "ok"}), 200
+        return jsonify({
+            "status": "ok",
+            "version": os.environ.get("APP_VERSION", "1.0"),
+        }), 200
 
     with app.app_context():
         db.create_all()
