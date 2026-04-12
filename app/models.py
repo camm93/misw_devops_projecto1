@@ -18,3 +18,5 @@ class Blacklist(db.Model):
     ip_address = db.Column(db.String(50))
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    __table_args__ = (db.UniqueConstraint("email", "app_uuid", name="uq_email_app"),)

@@ -40,7 +40,7 @@ class BlacklistResource(Resource):
         )
 
         if entry is None:
-            return {"message": "Email already exists in global blacklist"}, 409
+            return {"message": "Email already blacklisted for this app"}, 409
 
         return {"message": f"{normalized_email} added to blacklist"}, 201
 
