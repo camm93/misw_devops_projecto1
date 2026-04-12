@@ -9,9 +9,9 @@ class Blacklist(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    email = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    email = db.Column(db.String(255), nullable=False, index=True)
 
-    app_uuid = db.Column(db.String(36), nullable=False)
+    app_uuid = db.Column(db.String(36), nullable=False, index=True)
 
     blocked_reason = db.Column(db.String(255))
 
