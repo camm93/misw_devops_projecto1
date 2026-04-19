@@ -32,4 +32,5 @@ def client(app, db):
 
 @pytest.fixture(scope="session")
 def auth_headers():
-    return {"Authorization": "Bearer test-secret"}
+    token = os.environ.get("JWT_SECRET_KEY", "test-secret")
+    return {"Authorization": f"Bearer {token}"}
