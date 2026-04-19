@@ -1,0 +1,45 @@
+version: 0.2
+
+# Required environment variables (set in CodeBuild project):
+#   ECR_REGISTRY  
+#   ECR_REPOSITORY 
+#   AWS_DEFAULT_REGION 
+
+env:
+  variables:
+    DATABASE_URL: "sqlite:///:memory:"
+    JWT_SECRET_KEY: "test-secret-ci"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install -r requirements.txt
+
+  pre_build:
+    commands:
+      - echo "Running unit tests..."
+      - python -m pytest tests/ -v
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+  build:
+    commands:
+      - echo "Building Docker image..."
+      - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+      - docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  post_build:
+    commands:
+      - echo "Pushing Docker image to ECR..."
+      - docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+      - echo "Generating deployment artifact..."
+      - printf '{"AWSEBDockerrunVersion":"1","Image":{"Name":"%s/%s:%s","Update":"true"},"Ports":[{"ContainerPort":5000,"HostPort":80}]}' $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG > Dockerrun.aws.json
+
+artifacts:
+  files:
+    - Dockerrun.aws.json
+  discard-paths: yes
