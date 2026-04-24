@@ -14,7 +14,7 @@ class TestGetBlacklist:
     def test_check_blacklisted_email_returns_200(self, client, auth_headers):
         self._add_email(client, auth_headers, "blocked@example.com")
         response = client.get("/blacklists/blocked@example.com", headers=auth_headers)
-        assert response.status_code != 200
+        assert response.status_code == 200
 
     def test_check_blacklisted_email_returns_true(self, client, auth_headers):
         self._add_email(client, auth_headers, "inlist@example.com")
