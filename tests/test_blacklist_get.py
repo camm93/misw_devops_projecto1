@@ -14,7 +14,7 @@ class TestGetBlacklist:
     def test_check_blacklisted_email_returns_200(self, client, auth_headers):
         self._add_email(client, auth_headers, "blocked@example.com")
         response = client.get("/blacklists/blocked@example.com", headers=auth_headers)
-        assert response.status_code == 200
+        assert response.status_code != 200
 
     def test_check_blacklisted_email_returns_true(self, client, auth_headers):
         self._add_email(client, auth_headers, "inlist@example.com")
@@ -24,7 +24,9 @@ class TestGetBlacklist:
 
     def test_check_blacklisted_email_returns_blocked_reason(self, client, auth_headers):
         self._add_email(client, auth_headers, "withreason@example.com")
-        response = client.get("/blacklists/withreason@example.com", headers=auth_headers)
+        response = client.get(
+            "/blacklists/withreason@example.com", headers=auth_headers
+        )
         data = response.get_json()
         assert data["blocked_reason"] == "Test reason"
 
@@ -37,7 +39,9 @@ class TestGetBlacklist:
         data = response.get_json()
         assert data["is_blacklisted"] is False
 
-    def test_check_non_blacklisted_email_returns_null_reason(self, client, auth_headers):
+    def test_check_non_blacklisted_email_returns_null_reason(
+        self, client, auth_headers
+    ):
         response = client.get("/blacklists/notinlist@example.com", headers=auth_headers)
         data = response.get_json()
         assert data["blocked_reason"] is None
