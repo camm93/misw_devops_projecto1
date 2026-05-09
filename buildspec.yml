@@ -28,7 +28,6 @@ phases:
     commands:
       - echo "Building Docker image for x86_64 architecture..."
       - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
-      # CAMBIO CRÍTICO: Agregamos --platform linux/amd64 para que sea compatible con Fargate
       - docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
       - docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
