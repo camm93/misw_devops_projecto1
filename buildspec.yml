@@ -31,14 +31,24 @@ phases:
       - docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
       - docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-  post_build:
+post_build:
     commands:
-      - echo "Pushing Docker image to ECR..."
+      - echo "Pushing Docker image..."
       - docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-      - echo "Generating deployment artifact for ECS..."
+      - echo "Generating artifacts..."
       - printf '[{"name":"python-app","imageUri":"%s/%s:%s"}]' $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG > imagedefinitions.json
+      - printf '{"ImageURI":"%s/%s:%s"}' $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG > imageDetail.json
 
 artifacts:
   files:
+    - '**/*'
     - imagedefinitions.json
+    - imageDetail.json
+  secondary-artifacts:
+    DefinitionArtifact:
+      files:
+        - appspec.json
+        - taskdef.json
+    ImageArtifact:
+      files:
+        - imageDetail.json
