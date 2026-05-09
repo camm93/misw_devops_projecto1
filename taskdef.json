@@ -2,6 +2,9 @@
   "executionRoleArn": "arn:aws:iam::946133205152:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
+      "name": "python-app",
+      "image": "<IMAGE1_NAME>",
+      "essential": true,
       "portMappings": [
         {
           "hostPort": 5000,
@@ -9,9 +12,25 @@
           "containerPort": 5000
         }
       ],
-      "image": "<IMAGE1_NAME>",
-      "essential": true,
-      "name": "python-app"
+      "secrets": [
+        {
+          "name": "DATABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:946133205152:secret:blacklist/DATABASE_URL-cVdbr1"
+        },
+        {
+          "name": "JWT_SECRET_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:946133205152:secret:blacklist/JWT_SECRET_KEY-3KPe1l"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/Task-app-project-python",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      }
     }
   ],
   "requiresCompatibilities": [
