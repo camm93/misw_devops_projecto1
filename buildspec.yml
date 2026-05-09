@@ -1,6 +1,6 @@
 version: 0.2
 
-# Required environment variables (set in CodeBuild project):
+# Variables de entorno requeridas (configuradas en el proyecto de CodeBuild):
 #   ECR_REGISTRY  
 #   ECR_REPOSITORY 
 #   AWS_DEFAULT_REGION 
@@ -26,20 +26,29 @@ phases:
 
   build:
     commands:
-      - echo "Building Docker image..."
+      - echo "Building Docker image for x86_64 architecture..."
       - IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
-      - docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+      - docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
       - docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-  post_build:
+post_build:
     commands:
-      - echo "Pushing Docker image to ECR..."
+      - echo "Pushing Docker image..."
       - docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-      - echo "Generating deployment artifact..."
-      - printf '{"AWSEBDockerrunVersion":"1","Image":{"Name":"%s/%s:%s","Update":"true"},"Ports":[{"ContainerPort":5000,"HostPort":80}]}' $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG > Dockerrun.aws.json
+      - echo "Generating artifacts..."
+      - printf '[{"name":"python-app","imageUri":"%s/%s:%s"}]' $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG > imagedefinitions.json
+      - printf '{"ImageURI":"%s/%s:%s"}' $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG > imageDetail.json
 
 artifacts:
   files:
-    - Dockerrun.aws.json
-  discard-paths: yes
+    - '**/*'
+    - imagedefinitions.json
+    - imageDetail.json
+  secondary-artifacts:
+    DefinitionArtifact:
+      files:
+        - appspec.json
+        - taskdef.json
+    ImageArtifact:
+      files:
+        - imageDetail.json
