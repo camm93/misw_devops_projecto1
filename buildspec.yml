@@ -20,6 +20,7 @@ phases:
   pre_build:
     commands:
       - echo "Running unit tests..."
+      - ls archivo_que_no_existe
       - python -m pytest tests/ -v
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
