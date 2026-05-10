@@ -84,4 +84,4 @@ python run.py
 
 ## Despliegue
 
-La aplicación está configurada para desplegarse en **AWS Elastic Beanstalk** usando `gunicorn` como servidor WSGI. El archivo `application.py` y el `Procfile` están listos para el despliegue en EB.
+La aplicación se despliega en **AWS Fargate** mediante un pipeline de CI/CD con CodeBuild, CodeDeploy (estrategia blue/green) y CodePipeline. El archivo `application.py` actúa como entrypoint WSGI ejecutado por gunicorn dentro del contenedor.
