@@ -7,9 +7,9 @@
       "essential": true,
       "portMappings": [
         {
-          "hostPort": 5000,
+          "hostPort": 8080,
           "protocol": "tcp",
-          "containerPort": 5000
+          "containerPort": 8080
         }
       ],
       "secrets": [
