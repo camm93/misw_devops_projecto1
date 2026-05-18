@@ -1,0 +1,22 @@
+Dockerfile
+  s_6637dc572f2765::t_62f5ec8489fab6 12
+  s_6637dc572f2765::t_39558daedcf76d 8-9,13-16,19
+.dockerignore
+  s_6637dc572f2765::t_93892dbe40b0c3 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "2faba35a05884757cbe5b96ca6c4e8866489f601",
+  "prompts": {},
+  "sessions": {
+    "s_6637dc572f2765": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "734d0e26-5ec8-4825-b7d9-71b795677a26",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "amir1226 <amir1226@gmail.com>"
+    }
+  }
+}
