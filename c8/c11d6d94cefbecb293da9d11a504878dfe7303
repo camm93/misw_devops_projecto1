@@ -1,0 +1,19 @@
+.dockerignore
+  s_6637dc572f2765::t_93892dbe40b0c3 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "c8c11d6d94cefbecb293da9d11a504878dfe7303",
+  "prompts": {},
+  "sessions": {
+    "s_6637dc572f2765": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "734d0e26-5ec8-4825-b7d9-71b795677a26",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "amir1226 <amir1226@gmail.com>"
+    }
+  }
+}
